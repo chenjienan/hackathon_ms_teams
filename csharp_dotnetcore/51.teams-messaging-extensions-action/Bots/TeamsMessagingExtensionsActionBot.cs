@@ -52,10 +52,11 @@ namespace TeamsMessagingExtensionsAction.Bots
                     {
                         Body = new List<AdaptiveElement>()
                         {
-                            new AdaptiveTextBlock { Text = "Event: "+ eventData.Name, Size = AdaptiveTextSize.Large },
-                            new AdaptiveTextBlock { Text = eventData.Description },
-                            new AdaptiveTextBlock { Text = "Time: from " + eventData.StartTime + " to " + eventData.EndTime },
-                            new AdaptiveTextBlock { Text = "Total capacity: " + eventData.Capacity },
+                            new AdaptiveTextBlock {Text = "Event: " + eventData.Name, Size = AdaptiveTextSize.Large},
+                            new AdaptiveTextBlock {Text = eventData.Description},
+                            new AdaptiveTextBlock
+                                {Text = "Time: from " + eventData.StartTime + " to " + eventData.EndTime},
+                            new AdaptiveTextBlock {Text = "Total capacity: " + eventData.Capacity},
                         },
                         Height = AdaptiveHeight.Auto,
                         Actions = new List<AdaptiveAction>
@@ -66,9 +67,19 @@ namespace TeamsMessagingExtensionsAction.Bots
                                 Title = "Attend",
                                 Data = new JObject
                                 {
-                                    { "action", "true" } 
+                                    {"action", "true"}
 
-                                }                                
+                                }
+                            },
+                            new AdaptiveSubmitAction
+                            {
+                                Type = AdaptiveSubmitAction.TypeName,
+                                Title = "Not Attend",
+                                Data = new JObject
+                                {
+                                    {"action", "false"}
+
+                                }
                             }
                         }
                     }
@@ -104,13 +115,15 @@ namespace TeamsMessagingExtensionsAction.Bots
                     {
                         //await turnContext.SendActivityAsync(turnContext.Activity.Value.ToString(), cancellationToken: cancellationToken);
                         //await turnContext.SendActivityAsync(turnContext.Activity.ChannelData.ToString(), cancellationToken: cancellationToken);
+                        JToken commandToken = JToken.Parse(turnContext.Activity.Value.ToString());
+                        string action = commandToken["action"].Value<string>();
 
                         var response = new EventResponse();
-                            response.EventId = Guid.NewGuid().ToString();
-                            response.ResponseContent = 1;
-                            response.ResponseUserId = turnContext.Activity.From.Id;
-                            response.ResponseUsesrFirstName = turnContext.Activity.From.Name;
-                        
+                        response.EventId = Guid.NewGuid().ToString();
+                        response.ResponseContent = action == "true" ? 1 : 0;
+                        response.ResponseUserId = turnContext.Activity.From.Id;
+                        response.ResponseUsesrFirstName = turnContext.Activity.From.Name;
+
 
                         var yes = $"{turnContext.Activity.From.Name} is attending";
                         var no = $"{turnContext.Activity.From.Name} is NOT attending";
