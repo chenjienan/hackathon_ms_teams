@@ -51,6 +51,7 @@ namespace TeamsMessagingExtensionsAction.Bots
                 // await turnContext.SendActivityAsync(JsonConvert.SerializeObject(eventData));
 
                 var responseActivity = Activity.CreateMessageActivity();
+
                 Attachment attachment = new Attachment()
                 {
                     ContentType = AdaptiveCard.ContentType,
@@ -74,7 +75,7 @@ namespace TeamsMessagingExtensionsAction.Bots
                                 {
                                     {"action", "true"},
                                     {"eventId", eventId },
-                                    {"capacity", eventData.Capacity}
+                                    {"capacity", eventData.Capacity},
                                 }
                             },
                             new AdaptiveSubmitAction
@@ -85,7 +86,7 @@ namespace TeamsMessagingExtensionsAction.Bots
                                 {
                                     {"action", "false"},
                                     {"eventId", eventId },
-                                    {"capacity", eventData.Capacity}
+                                    {"capacity", eventData.Capacity},
                                 }
                             }
                         }
@@ -95,7 +96,8 @@ namespace TeamsMessagingExtensionsAction.Bots
                 var manager = new EventManager(_tableStoreService);
                 await manager.Add(eventData);
 
-                await turnContext.SendActivityAsync(responseActivity);                
+                await turnContext.SendActivityAsync(responseActivity);
+
             }
             catch (Exception e)
             {
@@ -107,8 +109,6 @@ namespace TeamsMessagingExtensionsAction.Bots
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
             await base.OnTurnAsync(turnContext, cancellationToken);
-            DialogContext dc = null;
-            string adaptiveCard = string.Empty;
 
             switch (turnContext.Activity.Type)
             {
@@ -162,6 +162,13 @@ namespace TeamsMessagingExtensionsAction.Bots
 
                         await turnContext.SendActivityAsync(returnMessage,
                             cancellationToken: cancellationToken);
+
+                        //Update primary reply message
+                        var responseNames = responses.Where(x => x.ResponseContent == 1).Select(x => x.ResponseUsesrFirstName).ToArray();
+                        var nameString = string.Join(",", responseNames);
+                        var replyActivity = MessageFactory.Text("Currently enrolled: " + nameString);
+                        await turnContext.SendActivityAsync(replyActivity, cancellationToken);
+
                     }
                     catch (Exception ex)
                     {
