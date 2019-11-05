@@ -23,15 +23,16 @@ namespace TeamsMessagingExtensionsAction.Controllers
     {
         private readonly IBotFrameworkHttpAdapter Adapter;
         private readonly IBot Bot;
-        private readonly DialogSet _dialogs;
+       // private readonly DialogSet _dialogs;
 
         public BotController(IBotFrameworkHttpAdapter adapter, IBot bot)
         {
             Adapter = adapter;
             Bot = bot;
-            _dialogs = new DialogSet();
+            //dialogs = new DialogSet();
         }
 
+        [HttpPost]
         public async Task PostAsync()
         {
             // Delegate the processing of the HTTP POST to the adapter.
@@ -95,10 +96,9 @@ namespace TeamsMessagingExtensionsAction.Controllers
                         await turnContext.SendActivityAsync(response.ResponseContent == 1 ? yes : no,
                             cancellationToken: cancellationToken);
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        await turnContext.SendActivityAsync("something went wrong",
-                            cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(ex.Message, cancellationToken: cancellationToken);
                     }
 
                     break;
