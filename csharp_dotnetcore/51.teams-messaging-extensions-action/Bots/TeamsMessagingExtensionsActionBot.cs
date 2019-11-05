@@ -102,21 +102,15 @@ namespace TeamsMessagingExtensionsAction.Bots
                 case ActivityTypes.Message:
                     try
                     {
-                        await turnContext.SendActivityAsync(turnContext.Activity.ToString(), cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(turnContext.Activity.Value.ToString(), cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(turnContext.Activity.ChannelData.ToString(), cancellationToken: cancellationToken);
 
-                        var token = JToken.Parse(turnContext.Activity.ChannelData.ToString());
-                        string selectedcolor = string.Empty;
                         var response = new EventResponse();
-                        if (Convert.ToBoolean(token["postback"].Value<string>()))
-                        {
-                            //JToken commandToken = JToken.Parse(turnContext.Activity.Value.ToString());
-                            //string action = commandToken["action"].Value<string>();
-
                             response.EventId = Guid.NewGuid().ToString();
                             response.ResponseContent = 1;
                             response.ResponseUserId = turnContext.Activity.From.Id;
                             response.ResponseUsesrFirstName = turnContext.Activity.From.Name;
-                        }
+                        
 
                         var yes = $"{turnContext.Activity.From.Name} is attending";
                         var no = $"{turnContext.Activity.From.Name} is NOT attending";
