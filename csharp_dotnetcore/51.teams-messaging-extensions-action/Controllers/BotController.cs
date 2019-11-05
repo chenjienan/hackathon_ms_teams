@@ -95,10 +95,9 @@ namespace TeamsMessagingExtensionsAction.Controllers
                         await turnContext.SendActivityAsync(response.ResponseContent == 1 ? yes : no,
                             cancellationToken: cancellationToken);
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        await turnContext.SendActivityAsync("something went wrong",
-                            cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(ex.Message, cancellationToken: cancellationToken);
                     }
 
                     break;
