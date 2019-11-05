@@ -84,21 +84,6 @@ namespace TeamsMessagingExtensionsAction.Bots
                 case ActivityTypes.ConversationUpdate:
                     foreach (var member in turnContext.Activity.MembersAdded)
                     {
-                        //if (member.Id != turnContext.Activity.Recipient.Id)
-                        //{
-                        //    adaptiveCard = File.ReadAllText(@".\wwwroot\ColorSelector.json");
-                        //    var reply = turnContext.Activity.CreateReply();
-                        //    reply.Attachments = new List<Attachment>()
-                        //    {
-                        //        new Attachment()
-                        //        {
-                        //            ContentType = "application/vnd.microsoft.card.adaptive",
-                        //            Content = JsonConvert.DeserializeObject(adaptiveCard)
-                        //        }
-                        //    };
-
-                        //    await turnContext.SendActivityAsync(reply, cancellationToken: cancellationToken);
-                        //}
                     }
 
                     break;
@@ -111,15 +96,11 @@ namespace TeamsMessagingExtensionsAction.Bots
                         var response = new EventResponse();
                         if (Convert.ToBoolean(token["postback"].Value<string>()))
                         {
-                            JToken commandToken = JToken.Parse(turnContext.Activity.Value.ToString());
-                            string action = commandToken["action"].Value<string>();
-                            //if (command.ToLowerInvariant() == "colorselector")
-                            //{
-                            //    selectedcolor = commandToken["choiceset"].Value<string>();
-                            //}
+                            //JToken commandToken = JToken.Parse(turnContext.Activity.Value.ToString());
+                            //string action = commandToken["action"].Value<string>();
 
                             response.EventId = Guid.NewGuid().ToString();
-                            response.ResponseContent = action == "true" ? 1 : 0;
+                            response.ResponseContent = 1;
                             response.ResponseUserId = turnContext.Activity.From.Id;
                             response.ResponseUsesrFirstName = turnContext.Activity.From.Name;
                         }
@@ -129,6 +110,7 @@ namespace TeamsMessagingExtensionsAction.Bots
 
                         await turnContext.SendActivityAsync(response.ResponseContent == 1 ? yes : no,
                             cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(turnContext.Activity.ToString(), cancellationToken: cancellationToken);
                     }
                     catch (Exception ex)
                     {
