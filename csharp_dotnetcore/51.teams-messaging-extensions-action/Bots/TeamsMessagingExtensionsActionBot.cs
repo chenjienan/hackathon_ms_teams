@@ -43,6 +43,9 @@ namespace TeamsMessagingExtensionsAction.Bots
             {
                 // The user has chosen to create a card by choosing the 'Create Card' context menu command.
                 var eventData = ((JObject)action.Data).ToObject<Event>();
+                var eventId = Guid.NewGuid().ToString();
+                eventData.Id = eventId;
+                eventData.PublishedChannelId = turnContext.Activity.ChannelId;
 
                 var responseActivity = Activity.CreateMessageActivity();
                 Attachment attachment = new Attachment()
@@ -67,8 +70,8 @@ namespace TeamsMessagingExtensionsAction.Bots
                                 Title = "Attend",
                                 Data = new JObject
                                 {
-                                    {"action", "true"}
-
+                                    {"action", "true"},
+                                    {"eventId", eventId }
                                 }
                             },
                             new AdaptiveSubmitAction
@@ -77,14 +80,16 @@ namespace TeamsMessagingExtensionsAction.Bots
                                 Title = "Not Attend",
                                 Data = new JObject
                                 {
-                                    {"action", "false"}
-
+                                    {"action", "false"},
+                                    {"eventId", eventId }
                                 }
                             }
                         }
                     }
                 };
                 responseActivity.Attachments.Add(attachment);
+                var manager = new EventManager(_tableStoreService);
+                await manager.Add(eventData);
 
                 await turnContext.SendActivityAsync(responseActivity);                
             }
@@ -117,13 +122,14 @@ namespace TeamsMessagingExtensionsAction.Bots
                         //await turnContext.SendActivityAsync(turnContext.Activity.ChannelData.ToString(), cancellationToken: cancellationToken);
                         JToken commandToken = JToken.Parse(turnContext.Activity.Value.ToString());
                         string action = commandToken["action"].Value<string>();
+                        string eventId = commandToken["eventId"].Value<string>();
 
                         var response = new EventResponse();
                         response.EventId = Guid.NewGuid().ToString();
                         response.ResponseContent = action == "true" ? 1 : 0;
                         response.ResponseUserId = turnContext.Activity.From.Id;
                         response.ResponseUsesrFirstName = turnContext.Activity.From.Name;
-
+                        response.EventId = eventId;
 
                         var yes = $"{turnContext.Activity.From.Name} is attending";
                         var no = $"{turnContext.Activity.From.Name} is NOT attending";

@@ -27,7 +27,7 @@ namespace TeamsMessagingExtensionsAction.Controllers
                 ResponseContent =  1,
                 ResponseDateTime = DateTime.Now
             };
-            var result = await _tableStoreService.AddEventResponseAsync(response);
+            var result = await _tableStoreService.AddEventResponseAsync(res);
         }
 
 

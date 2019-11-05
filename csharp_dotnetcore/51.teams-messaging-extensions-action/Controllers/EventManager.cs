@@ -28,7 +28,7 @@ namespace TeamsMessagingExtensionsAction.Controllers
                 StartTime = "Nov 11, 2019",
                 EndTime = "Nov 12, 2019"
             };
-            var result = await _tableStoreService.AddEventAsync(meeting);
+            var result = await _tableStoreService.AddEventAsync(evt);
         }
 
         public async Task<IEnumerable<Event>> GetEventByChannelId(string channelId)
