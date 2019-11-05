@@ -3,12 +3,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using AdaptiveCards;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.BotBuilderSamples.Bots
@@ -30,34 +33,39 @@ namespace Microsoft.BotBuilderSamples.Bots
             }
         }
 
+        private readonly string _path = Path.Combine(".", "Resources", "CardTemplate.json");
+
         private MessagingExtensionActionResponse CreateCardCommand(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action)
         {
             // The user has chosen to create a card by choosing the 'Create Card' context menu command.
-            var createCardData = ((JObject)action.Data).ToObject<CreateCardData>();
-            
-            var card = new HeroCard
-            {
-                Title = createCardData.Title,
-                Subtitle = createCardData.Subtitle,
-                Text = createCardData.Text,
-            };
+            //var createCardData = ((JObject)action.Data).ToObject<CreateCardData>();
 
-            var attachments = new List<MessagingExtensionAttachment>();
-            attachments.Add(new MessagingExtensionAttachment
-            {
-                Content = card,
-                ContentType = HeroCard.ContentType,
-                Preview = card.ToAttachment(),
-            });
-            
+            //var card = new HeroCard
+            //{
+            //    Title = createCardData.Title,
+            //    Subtitle = createCardData.Subtitle,
+            //    Text = createCardData.Text,
+            //};
+
+            //var attachments = new List<MessagingExtensionAttachment>();
+            //attachments.Add(new MessagingExtensionAttachment
+            //{
+            //    Content = card,
+            //    ContentType = HeroCard.ContentType,
+            //    Preview = card.ToAttachment(),
+            //});
+
+            var adaptiveCardJson = File.ReadAllText(_path);
+
+            var card = AdaptiveCard.FromJson(adaptiveCardJson);
             return new MessagingExtensionActionResponse
             {
                 ComposeExtension = new MessagingExtensionResult
                 {
                     AttachmentLayout = "list",
                     Type = "result",
-                    Attachments = attachments,
-                },
+                    Attachments = new List<MessagingExtensionAttachment> {new MessagingExtensionAttachment{Content = card, ContentType = AdaptiveCard.ContentType}}
+                }
             };
         }
 
