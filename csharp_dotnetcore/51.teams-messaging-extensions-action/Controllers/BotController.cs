@@ -23,15 +23,16 @@ namespace TeamsMessagingExtensionsAction.Controllers
     {
         private readonly IBotFrameworkHttpAdapter Adapter;
         private readonly IBot Bot;
-        private readonly DialogSet _dialogs;
+       // private readonly DialogSet _dialogs;
 
         public BotController(IBotFrameworkHttpAdapter adapter, IBot bot)
         {
             Adapter = adapter;
             Bot = bot;
-            _dialogs = new DialogSet();
+            //dialogs = new DialogSet();
         }
 
+        [HttpPost]
         public async Task PostAsync()
         {
             // Delegate the processing of the HTTP POST to the adapter.
