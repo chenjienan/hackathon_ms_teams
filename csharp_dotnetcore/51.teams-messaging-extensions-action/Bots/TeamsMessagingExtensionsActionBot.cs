@@ -72,7 +72,8 @@ namespace TeamsMessagingExtensionsAction.Bots
                                 Data = new JObject
                                 {
                                     {"action", "true"},
-                                    {"eventId", eventId }
+                                    {"eventId", eventId },
+                                    {"capacity", eventData.Capacity}
                                 }
                             },
                             new AdaptiveSubmitAction
@@ -83,7 +84,7 @@ namespace TeamsMessagingExtensionsAction.Bots
                                 {
                                     {"action", "false"},
                                     {"eventId", eventId },
-                                    {"capacity", }
+                                    {"capacity", eventData.Capacity}
                                 }
                             }
                         }
