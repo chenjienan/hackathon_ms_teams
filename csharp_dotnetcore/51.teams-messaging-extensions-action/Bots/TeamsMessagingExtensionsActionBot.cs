@@ -14,12 +14,21 @@ using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TeamsMessagingExtensionsAction.Controllers;
 using WCB.TeamMeet.Domain;
+using WCB.TeamMeet.Storage.Service;
 
 namespace TeamsMessagingExtensionsAction.Bots
 {
     public class TeamsMessagingExtensionsActionBot : TeamsActivityHandler
     {
+        //private readonly ITableStoreService _tableStoreService;
+
+        //public TeamsMessagingExtensionsActionBot(ITableStoreService tableStoreService)
+        //{
+        //    _tableStoreService = tableStoreService;
+        //}
+
         protected override async Task<MessagingExtensionActionResponse> OnTeamsMessagingExtensionSubmitActionAsync(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action, CancellationToken cancellationToken)
         {            
             return await CreateCardCommand(turnContext, action);
@@ -91,6 +100,8 @@ namespace TeamsMessagingExtensionsAction.Bots
                 case ActivityTypes.Message:
                     try
                     {
+                        await turnContext.SendActivityAsync(turnContext.Activity.ToString(), cancellationToken: cancellationToken);
+
                         var token = JToken.Parse(turnContext.Activity.ChannelData.ToString());
                         string selectedcolor = string.Empty;
                         var response = new EventResponse();
@@ -108,9 +119,11 @@ namespace TeamsMessagingExtensionsAction.Bots
                         var yes = $"{turnContext.Activity.From.Name} is attending";
                         var no = $"{turnContext.Activity.From.Name} is NOT attending";
 
-                        await turnContext.SendActivityAsync(response.ResponseContent == 1 ? yes : no,
-                            cancellationToken: cancellationToken);
-                        await turnContext.SendActivityAsync(turnContext.Activity.ToString(), cancellationToken: cancellationToken);
+                        //var manager = new EventResponseManager(_tableStoreService);
+                        //await manager.Add(response);
+
+                        //await turnContext.SendActivityAsync(response.ResponseContent == 1 ? yes : no,
+                        //    cancellationToken: cancellationToken);
                     }
                     catch (Exception ex)
                     {
