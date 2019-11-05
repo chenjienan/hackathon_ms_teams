@@ -32,18 +32,18 @@
           "type": "action",
           "context": [ "compose" ],
           "description": "Command to run action to create a Card from Compose Box",
-          "title": "Create Card",
+          "title": "Create an event",
           "parameters": [
             {
-              "name": "title",
-              "title": "Card title",
-              "description": "Title for the card",
+              "name": "name",
+              "title": "Event name",
+              "description": "Name of the event",
               "inputType": "text"
             },
             {
-              "name": "subTitle",
-              "title": "Subtitle",
-              "description": "Subtitle for the card",
+              "name": "description",
+              "title": "Event Description",
+              "description": "Description of the event",
               "inputType": "text"
             },
             {

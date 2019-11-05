@@ -38,7 +38,7 @@ namespace Microsoft.BotBuilderSamples.Bots
         private async Task<MessagingExtensionActionResponse> CreateCardCommand(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action)
         {
             // The user has chosen to create a card by choosing the 'Create Card' context menu command.
-            var createCardData = ((JObject)action.Data).ToObject<CreateCardData>();
+            var eventData = ((JObject)action.Data).ToObject<Event>();
 
             //var card = new HeroCard
             //{
@@ -98,7 +98,7 @@ namespace Microsoft.BotBuilderSamples.Bots
                     Body = new List<AdaptiveElement>()
                     {
                         new AdaptiveTextBlock() { Text = "FormField1 value was:", Size = AdaptiveTextSize.Large },
-                        new AdaptiveTextBlock() { Text = createCardData.Title }
+                        new AdaptiveTextBlock() { Text = eventData.Name }
                     },
                     Height = AdaptiveHeight.Auto,
                     Actions = new List<AdaptiveAction>()
@@ -167,13 +167,34 @@ namespace Microsoft.BotBuilderSamples.Bots
             };
         }
 
-        private class CreateCardData
+        private class Event
         {
-            public string Title { get; set; }
+            public string Id { get; set; }
+            public string Name { get; set; }
+            public string Description { get; set; }
+            public DateTime CreatedDateTiem { get; set; }
+            public DateTime StartTime { get; set; }
+            public DateTime EndTime { get; set; }
+            public string Location { get; set; }
+            public int MinCapacity { get; set; }
+            public int MaxCapacity { get; set; }
+            public string PublishedChannelId { get; set; }
+            public List<EventResponse> Responses { get; set; }
+        }
 
-            public string Subtitle { get; set; }
+        private class EventResponse
+        {
+            public string Id { get; set; }
+            public Participant ResponsedBy { get; set; }
+            public int Response { get; set; }
+            public DateTime RespondeDateTime { get; set; }
+        }
 
-            public string Text { get; set; }
+        private class Participant
+        {
+            public string Id { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
         }
     }
 }
