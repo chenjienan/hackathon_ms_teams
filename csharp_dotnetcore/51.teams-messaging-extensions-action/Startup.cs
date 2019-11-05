@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.BotBuilderSamples.Bots;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TeamsMessagingExtensionsAction.Bots;
 using WCB.TeamMeet.Storage.Service;
 
 namespace TeamsMessagingExtensionsAction

@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Providers\**" />
+    <Content Remove="Providers\**" />
+    <EmbeddedResource Remove="Providers\**" />
+    <None Remove="Providers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AdaptiveCards" Version="1.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.6.0" />
@@ -16,10 +23,6 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Providers\" />
   </ItemGroup>
 
   <ItemGroup>

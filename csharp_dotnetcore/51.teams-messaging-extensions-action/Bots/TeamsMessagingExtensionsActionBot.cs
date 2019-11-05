@@ -11,11 +11,10 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WCB.TeamMeet.Domain;
 
-namespace Microsoft.BotBuilderSamples.Bots
+namespace TeamsMessagingExtensionsAction.Bots
 {
     public class TeamsMessagingExtensionsActionBot : TeamsActivityHandler
     {
