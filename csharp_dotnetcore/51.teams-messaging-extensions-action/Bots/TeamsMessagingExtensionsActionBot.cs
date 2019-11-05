@@ -8,9 +8,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveCards;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WCB.TeamMeet.Domain;
 
@@ -57,8 +59,8 @@ namespace TeamsMessagingExtensionsAction.Bots
                         new AdaptiveSubmitAction
                         {
                             Type = AdaptiveSubmitAction.TypeName,
-                            Title = "Submit",
-                            Data = new JObject { { "submitLocation", "messagingExtensionFetchTask" } },
+                            Title = "Attend",
+                            Data = new JObject { { "action", "true" } }
                         }
                     }
                 }
@@ -70,6 +72,24 @@ namespace TeamsMessagingExtensionsAction.Bots
             return new MessagingExtensionActionResponse();
         }
 
+
+
+
+
+
+        //protected override async Task RouteAsync(DialogContext dc, CancellationToken cancellationToken = default(CancellationToken))
+        //{
+        //    if (string.IsNullOrEmpty(activity.Text))
+        //    {
+        //        dynamic value = dc.Context.Activity.Value;
+
+        //        await turnContext.SendActivityAsync($"Ticket = {value[TICKETFIELD]}, Summary = {value[SUMMARYFIELD]}, Status = {value[STATUSFIELD]}");
+        //    }
+        //    else
+        //    {
+        //        // All the code that was already there
+        //    }
+        //}
         private MessagingExtensionActionResponse ShareMessageCommand(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action)
         {
             // The user has chosen to share a message by choosing the 'Share Message' context menu command.
