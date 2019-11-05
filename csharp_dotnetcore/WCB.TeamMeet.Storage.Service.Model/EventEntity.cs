@@ -17,11 +17,10 @@ namespace WCB.TeamMeet.Storage.Service.Model
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime CreatedDateTime { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
         public string Location { get; set; }
-        public int MinCapacity { get; set; }
-        public int MaxCapacity { get; set; }
+        public int Capacity { get; set; }
         public string PublishedChannelId { get; set; }
     }
 }

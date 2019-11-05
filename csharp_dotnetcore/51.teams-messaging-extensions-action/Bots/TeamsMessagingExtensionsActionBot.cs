@@ -20,54 +20,51 @@ namespace Microsoft.BotBuilderSamples.Bots
     public class TeamsMessagingExtensionsActionBot : TeamsActivityHandler
     {
         protected override async Task<MessagingExtensionActionResponse> OnTeamsMessagingExtensionSubmitActionAsync(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action, CancellationToken cancellationToken)
-        {
-            switch (action.CommandId)
-            {
-                // These commandIds are defined in the Teams App Manifest.
-                case "createCard":
-                    return await CreateCardCommand(turnContext, action);
-
-                case "shareMessage":
-                    return ShareMessageCommand(turnContext, action);
-                default:
-                    throw new NotImplementedException($"Invalid CommandId: {action.CommandId}");
-            }
+        {            
+            return await CreateCardCommand(turnContext, action);
+            
         }
 
         private readonly string _path = Path.Combine(".", "Resources", "CardTemplate.json");
 
         private async Task<MessagingExtensionActionResponse> CreateCardCommand(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action)
         {
-            // The user has chosen to create a card by choosing the 'Create Card' context menu command.
-            var eventData = ((JObject)action.Data).ToObject<Event>();
-
-            var responseActivity = Activity.CreateMessageActivity();
-            Attachment attachment = new Attachment()
+            try
             {
-                ContentType = AdaptiveCard.ContentType,
-                Content = new AdaptiveCard("1.0")
+                // The user has chosen to create a card by choosing the 'Create Card' context menu command.
+                //var eventData = ((JObject)action.Data).ToObject<Event>();
+
+                var responseActivity = Activity.CreateMessageActivity();
+                Attachment attachment = new Attachment()
                 {
-                    Body = new List<AdaptiveElement>()
+                    ContentType = AdaptiveCard.ContentType,
+                    Content = new AdaptiveCard("1.0")
                     {
-                        new AdaptiveTextBlock() { Text = "FormField1 value was:", Size = AdaptiveTextSize.Large },
-                        new AdaptiveTextBlock() { Text = eventData.Name }
-                    },
-                    Height = AdaptiveHeight.Auto,
-                    Actions = new List<AdaptiveAction>()
-                    {
-                        new AdaptiveSubmitAction
+                        Body = new List<AdaptiveElement>()
                         {
-                            Type = AdaptiveSubmitAction.TypeName,
-                            Title = "Submit",
-                            Data = new JObject { { "submitLocation", "messagingExtensionFetchTask" } },
+                            new AdaptiveTextBlock { Text = "FormField1 value was:", Size = AdaptiveTextSize.Large },
+                            //new AdaptiveTextBlock { Text = eventData.Name }
+                        },
+                        Height = AdaptiveHeight.Auto,
+                        Actions = new List<AdaptiveAction>
+                        {
+                            new AdaptiveSubmitAction
+                            {
+                                Type = AdaptiveSubmitAction.TypeName,
+                                Title = "Submit",
+                                Data = new JObject { { "submitLocation", "messagingExtensionFetchTask" } },
+                            }
                         }
                     }
-                }
-            };
-            responseActivity.Attachments.Add(attachment);
+                };
+                responseActivity.Attachments.Add(attachment);
 
-            await turnContext.SendActivityAsync(responseActivity);
-        
+                await turnContext.SendActivityAsync(responseActivity);                
+            }
+            catch (Exception e)
+            {
+                await turnContext.SendActivityAsync(e.Message);
+            }
             return new MessagingExtensionActionResponse();
         }
 

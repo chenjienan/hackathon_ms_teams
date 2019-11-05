@@ -28,8 +28,8 @@ namespace TeamsMessagingExtensionsAction.Controllers
                 Name = "Testing",
                 Description = "TestDescription",
                 CreatedDateTime = DateTime.Now,
-                StartTime = DateTime.Now.AddDays(1),
-                EndTime = DateTime.Now.AddDays(2)
+                StartTime = "Nov 11, 2019",
+                EndTime = "Nov 12, 2019"
             };
             var result = await _tableStoreService.AddEventAsync(meeting);
         }

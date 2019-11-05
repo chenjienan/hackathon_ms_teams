@@ -32,8 +32,7 @@ namespace WCB.TeamMeet.Storage.Service
                 Location = meeting.Location,
                 CreatedDateTime = meeting.CreatedDateTime,
                 PublishedChannelId = meeting.PublishedChannelId,
-                MinCapacity = meeting.MinCapacity,
-                MaxCapacity = meeting.MaxCapacity
+                Capacity = meeting.Capacity
             };
         }
 
@@ -132,11 +131,10 @@ namespace WCB.TeamMeet.Storage.Service
                         Location = result.Location,
                         Name = result.Name,
                         Description = result.Description,
-                        StartTime = result.StartTime.ToLocalTime(),
-                        EndTime = result.EndTime.ToLocalTime(),
+                        StartTime = result.StartTime,
+                        EndTime = result.EndTime,
                         CreatedDateTime = result.CreatedDateTime,
-                        MinCapacity = result.MinCapacity,
-                        MaxCapacity = result.MaxCapacity,
+                        Capacity = result.Capacity,
                         PublishedChannelId = result.PublishedChannelId
                     };
                 }
@@ -176,11 +174,10 @@ namespace WCB.TeamMeet.Storage.Service
                             Id = x.Id,
                             Location = x.Location,
                             Name = x.Name,
-                            StartTime = x.StartTime.ToLocalTime(),
+                            StartTime = x.StartTime,
                             EndTime = x.EndTime,
                             Description = x.Description,
-                            MinCapacity = x.MinCapacity,
-                            MaxCapacity = x.MaxCapacity,
+                            Capacity = x.Capacity,
                             CreatedDateTime = x.CreatedDateTime,
                             PublishedChannelId = x.PublishedChannelId
                         }));
