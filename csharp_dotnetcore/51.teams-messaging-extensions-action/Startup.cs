@@ -6,13 +6,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.BotBuilderSamples.Bots;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WCB.TeamMeet.Storage.Service;
 
-using Microsoft.BotBuilderSamples.Bots;
-using System.Collections.Concurrent;
-
-namespace Microsoft.BotBuilderSamples
+namespace TeamsMessagingExtensionsAction
 {
     public class Startup
     {
@@ -30,6 +29,8 @@ namespace Microsoft.BotBuilderSamples
             
             // Create the Bot Framework Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
+            services.AddSingleton<ICloudStorageAccountWrapper, CloudStorageAccountWrapper>();
+            services.AddSingleton<ITableStoreService, TableStoreService>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, TeamsMessagingExtensionsActionBot>();

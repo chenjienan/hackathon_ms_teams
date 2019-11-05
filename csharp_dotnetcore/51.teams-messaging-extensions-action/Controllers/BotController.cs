@@ -24,7 +24,6 @@ namespace Microsoft.BotBuilderSamples.Controllers
             Bot = bot;
         }
 
-        [HttpPost]
         public async Task PostAsync()
         {
             // Delegate the processing of the HTTP POST to the adapter.
