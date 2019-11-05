@@ -24,7 +24,7 @@ namespace Microsoft.BotBuilderSamples.Bots
             {
                 // These commandIds are defined in the Teams App Manifest.
                 case "createCard":
-                    return CreateCardCommand(turnContext, action);
+                    return await CreateCardCommand(turnContext, action);
 
                 case "shareMessage":
                     return ShareMessageCommand(turnContext, action);
@@ -35,10 +35,10 @@ namespace Microsoft.BotBuilderSamples.Bots
 
         private readonly string _path = Path.Combine(".", "Resources", "CardTemplate.json");
 
-        private MessagingExtensionActionResponse CreateCardCommand(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action)
+        private async Task<MessagingExtensionActionResponse> CreateCardCommand(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action)
         {
             // The user has chosen to create a card by choosing the 'Create Card' context menu command.
-            //var createCardData = ((JObject)action.Data).ToObject<CreateCardData>();
+            var createCardData = ((JObject)action.Data).ToObject<CreateCardData>();
 
             //var card = new HeroCard
             //{
@@ -57,38 +57,68 @@ namespace Microsoft.BotBuilderSamples.Bots
 
             var adaptiveCardJson = File.ReadAllText(_path);
 
-            dynamic Data = JObject.Parse(action.Data.ToString());
-            var response = new MessagingExtensionActionResponse
+            //dynamic Data = JObject.Parse(action.Data.ToString());
+            //var response = new MessagingExtensionActionResponse
+            //{
+            //    ComposeExtension = new MessagingExtensionResult
+            //    {
+            //        Type = "result",
+            //        ActivityPreview = MessageFactory.Attachment(new Attachment
+            //        {
+            //            Content = new AdaptiveCard("1.0")
+            //            {
+            //                Body = new List<AdaptiveElement>()
+            //                {
+            //                    new AdaptiveTextBlock() { Text = "FormField1 value was:", Size = AdaptiveTextSize.Large },
+            //                    new AdaptiveTextBlock() { Text = Data["FormField1"] as string }
+            //                },
+            //                Height = AdaptiveHeight.Auto,
+            //                Actions = new List<AdaptiveAction>()
+            //                {
+            //                    new AdaptiveSubmitAction
+            //                    {
+            //                        Type = AdaptiveSubmitAction.TypeName,
+            //                        Title = "Submit",
+            //                        Data = new JObject { { "submitLocation", "messagingExtensionFetchTask" } },
+            //                    },
+            //                }
+            //            },
+            //            ContentType = AdaptiveCard.ContentType
+            //        }) as Activity
+            //    }
+            //};
+
+
+            var responseActivity = Activity.CreateMessageActivity();
+            Attachment attachment = new Attachment()
             {
-                ComposeExtension = new MessagingExtensionResult
+                ContentType = AdaptiveCard.ContentType,
+                Content = new AdaptiveCard("1.0")
                 {
-                    Type = "botMessagePreview",
-                    ActivityPreview = MessageFactory.Attachment(new Attachment
+                    Body = new List<AdaptiveElement>()
                     {
-                        Content = new AdaptiveCard("1.0")
+                        new AdaptiveTextBlock() { Text = "FormField1 value was:", Size = AdaptiveTextSize.Large },
+                        new AdaptiveTextBlock() { Text = createCardData.Title }
+                    },
+                    Height = AdaptiveHeight.Auto,
+                    Actions = new List<AdaptiveAction>()
+                    {
+                        new AdaptiveSubmitAction
                         {
-                            Body = new List<AdaptiveElement>()
-                            {
-                                new AdaptiveTextBlock() { Text = "FormField1 value was:", Size = AdaptiveTextSize.Large },
-                                new AdaptiveTextBlock() { Text = Data["FormField1"] as string }
-                            },
-                            Height = AdaptiveHeight.Auto,
-                            Actions = new List<AdaptiveAction>()
-                            {
-                                new AdaptiveSubmitAction
-                                {
-                                    Type = AdaptiveSubmitAction.TypeName,
-                                    Title = "Submit",
-                                    Data = new JObject { { "submitLocation", "messagingExtensionFetchTask" } },
-                                },
-                            }
-                        },
-                        ContentType = AdaptiveCard.ContentType
-                    }) as Activity
+                            Type = AdaptiveSubmitAction.TypeName,
+                            Title = "Submit",
+                            Data = new JObject { { "submitLocation", "messagingExtensionFetchTask" } },
+                        }
+                    }
                 }
             };
+            responseActivity.Attachments.Add(attachment);
 
-            return response;
+            await turnContext.SendActivityAsync(responseActivity);
+
+
+            return new MessagingExtensionActionResponse();
+            //return response;
         }
 
         private MessagingExtensionActionResponse ShareMessageCommand(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action)
