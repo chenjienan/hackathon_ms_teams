@@ -48,7 +48,7 @@ namespace TeamsMessagingExtensionsAction.Bots
                 eventData.Id = eventId;                
                 eventData.PublishedChannelId = turnContext.Activity.ChannelId;
                 eventData.CreatedDateTime = DateTime.Now;
-                await turnContext.SendActivityAsync(JsonConvert.SerializeObject(eventData));
+                // await turnContext.SendActivityAsync(JsonConvert.SerializeObject(eventData));
 
                 var responseActivity = Activity.CreateMessageActivity();
                 Attachment attachment = new Attachment()
@@ -142,8 +142,8 @@ namespace TeamsMessagingExtensionsAction.Bots
                         var responses = await manager.GetResponsesByEventId(eventId);
                         var left = capacity - responses.Count(x => x.ResponseContent == 1);
 
-                        var good = $"Number of spot left: {left}";
-                        var waitlist = $"You are in waitlist: {-left}";
+                        var good = $" Number of spot left: {left}";
+                        var waitlist = $" You are in waiting list: {-left}";
                         string returnMessage;
                         if (response.ResponseContent == 1)
                         {
