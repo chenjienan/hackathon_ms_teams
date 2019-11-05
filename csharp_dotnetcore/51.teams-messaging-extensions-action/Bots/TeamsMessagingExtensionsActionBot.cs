@@ -22,12 +22,12 @@ namespace TeamsMessagingExtensionsAction.Bots
 {
     public class TeamsMessagingExtensionsActionBot : TeamsActivityHandler
     {
-        //private readonly ITableStoreService _tableStoreService;
+        private readonly ITableStoreService _tableStoreService;
 
-        //public TeamsMessagingExtensionsActionBot(ITableStoreService tableStoreService)
-        //{
-        //    _tableStoreService = tableStoreService;
-        //}
+        public TeamsMessagingExtensionsActionBot(ITableStoreService tableStoreService)
+        {
+            _tableStoreService = tableStoreService;
+        }
 
         protected override async Task<MessagingExtensionActionResponse> OnTeamsMessagingExtensionSubmitActionAsync(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action, CancellationToken cancellationToken)
         {            
@@ -102,8 +102,8 @@ namespace TeamsMessagingExtensionsAction.Bots
                 case ActivityTypes.Message:
                     try
                     {
-                        await turnContext.SendActivityAsync(turnContext.Activity.Value.ToString(), cancellationToken: cancellationToken);
-                        await turnContext.SendActivityAsync(turnContext.Activity.ChannelData.ToString(), cancellationToken: cancellationToken);
+                        //await turnContext.SendActivityAsync(turnContext.Activity.Value.ToString(), cancellationToken: cancellationToken);
+                        //await turnContext.SendActivityAsync(turnContext.Activity.ChannelData.ToString(), cancellationToken: cancellationToken);
 
                         var response = new EventResponse();
                             response.EventId = Guid.NewGuid().ToString();
@@ -115,11 +115,11 @@ namespace TeamsMessagingExtensionsAction.Bots
                         var yes = $"{turnContext.Activity.From.Name} is attending";
                         var no = $"{turnContext.Activity.From.Name} is NOT attending";
 
-                        //var manager = new EventResponseManager(_tableStoreService);
-                        //await manager.Add(response);
+                        var manager = new EventResponseManager(_tableStoreService);
+                        await manager.Add(response);
 
-                        //await turnContext.SendActivityAsync(response.ResponseContent == 1 ? yes : no,
-                        //    cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(response.ResponseContent == 1 ? yes : no,
+                            cancellationToken: cancellationToken);
                     }
                     catch (Exception ex)
                     {
