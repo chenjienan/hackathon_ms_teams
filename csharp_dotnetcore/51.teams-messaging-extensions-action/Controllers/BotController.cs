@@ -69,30 +69,37 @@ namespace TeamsMessagingExtensionsAction.Controllers
                     break;
 
                 case ActivityTypes.Message:
-
-                    var token = JToken.Parse(turnContext.Activity.ChannelData.ToString());
-                    string selectedcolor = string.Empty;
-                    var response = new EventResponse();
-                    if (Convert.ToBoolean(token["postback"].Value<string>()))
+                    try
                     {
-                        JToken commandToken = JToken.Parse(turnContext.Activity.Value.ToString());
-                        string action = commandToken["action"].Value<string>();
-                        //if (command.ToLowerInvariant() == "colorselector")
-                        //{
-                        //    selectedcolor = commandToken["choiceset"].Value<string>();
-                        //}
+                        var token = JToken.Parse(turnContext.Activity.ChannelData.ToString());
+                        string selectedcolor = string.Empty;
+                        var response = new EventResponse();
+                        if (Convert.ToBoolean(token["postback"].Value<string>()))
+                        {
+                            JToken commandToken = JToken.Parse(turnContext.Activity.Value.ToString());
+                            string action = commandToken["action"].Value<string>();
+                            //if (command.ToLowerInvariant() == "colorselector")
+                            //{
+                            //    selectedcolor = commandToken["choiceset"].Value<string>();
+                            //}
 
-                        response.EventId = Guid.NewGuid().ToString();
-                        response.ResponseContent = action == "true" ? 1 : 0;
-                        response.ResponseUserId = turnContext.Activity.From.Id;
-                        response.ResponseUsesrFirstName = turnContext.Activity.From.Name;
+                            response.EventId = Guid.NewGuid().ToString();
+                            response.ResponseContent = action == "true" ? 1 : 0;
+                            response.ResponseUserId = turnContext.Activity.From.Id;
+                            response.ResponseUsesrFirstName = turnContext.Activity.From.Name;
+                        }
+
+                        var yes = $"{turnContext.Activity.From.Name} is attending";
+                        var no = $"{turnContext.Activity.From.Name} is NOT attending";
+
+                        await turnContext.SendActivityAsync(response.ResponseContent == 1 ? yes : no,
+                            cancellationToken: cancellationToken);
                     }
-
-                    var yes = $"{turnContext.Activity.From.Name} is attending";
-                    var no = $"{turnContext.Activity.From.Name} is NOT attending";
-
-                    await turnContext.SendActivityAsync(response.ResponseContent == 1 ? yes : no,
-                        cancellationToken: cancellationToken);
+                    catch
+                    {
+                        await turnContext.SendActivityAsync("something went wrong",
+                            cancellationToken: cancellationToken);
+                    }
 
                     break;
 
