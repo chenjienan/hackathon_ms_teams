@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveCards;
@@ -81,7 +82,8 @@ namespace TeamsMessagingExtensionsAction.Bots
                                 Data = new JObject
                                 {
                                     {"action", "false"},
-                                    {"eventId", eventId }
+                                    {"eventId", eventId },
+                                    {"capacity", }
                                 }
                             }
                         }
@@ -123,6 +125,7 @@ namespace TeamsMessagingExtensionsAction.Bots
                         JToken commandToken = JToken.Parse(turnContext.Activity.Value.ToString());
                         string action = commandToken["action"].Value<string>();
                         string eventId = commandToken["eventId"].Value<string>();
+                        int capacity = commandToken["capacity"].Value<int>();
 
                         var response = new EventResponse();
                         response.EventId = Guid.NewGuid().ToString();
@@ -131,13 +134,32 @@ namespace TeamsMessagingExtensionsAction.Bots
                         response.ResponseUsesrFirstName = turnContext.Activity.From.Name;
                         response.EventId = eventId;
 
-                        var yes = $"{turnContext.Activity.From.Name} is attending";
-                        var no = $"{turnContext.Activity.From.Name} is NOT attending";
-
+                        var yes = $"{turnContext.Activity.From.Name} is attending.";
+                        var no = $"{turnContext.Activity.From.Name} is NOT attending.";
                         var manager = new EventResponseManager(_tableStoreService);
                         await manager.Add(response);
+                        var responses = await manager.GetResponsesByEventId(eventId);
+                        var left = capacity - responses.Count(x => x.ResponseContent == 1);
 
-                        await turnContext.SendActivityAsync(response.ResponseContent == 1 ? yes : no,
+                        var good = $"Number of spot left: {left}";
+                        var waitlist = $"You are in waitlist: {-left}";
+                        string returnMessage;
+                        if (response.ResponseContent == 1)
+                        {
+                            returnMessage = yes;
+                            if (left < 0)
+                            {
+                                returnMessage += waitlist;
+                            }
+                            else
+                            {
+                                returnMessage += good;
+                            }
+                        }
+                        else
+                            returnMessage = no;
+
+                        await turnContext.SendActivityAsync(returnMessage,
                             cancellationToken: cancellationToken);
                     }
                     catch (Exception ex)
