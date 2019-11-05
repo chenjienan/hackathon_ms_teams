@@ -57,16 +57,38 @@ namespace Microsoft.BotBuilderSamples.Bots
 
             var adaptiveCardJson = File.ReadAllText(_path);
 
-            var card = AdaptiveCard.FromJson(adaptiveCardJson);
-            return new MessagingExtensionActionResponse
+            dynamic Data = JObject.Parse(action.Data.ToString());
+            var response = new MessagingExtensionActionResponse
             {
                 ComposeExtension = new MessagingExtensionResult
                 {
-                    AttachmentLayout = "list",
-                    Type = "result",
-                    Attachments = new List<MessagingExtensionAttachment> {new MessagingExtensionAttachment{Content = card, ContentType = AdaptiveCard.ContentType}}
+                    Type = "botMessagePreview",
+                    ActivityPreview = MessageFactory.Attachment(new Attachment
+                    {
+                        Content = new AdaptiveCard("1.0")
+                        {
+                            Body = new List<AdaptiveElement>()
+                            {
+                                new AdaptiveTextBlock() { Text = "FormField1 value was:", Size = AdaptiveTextSize.Large },
+                                new AdaptiveTextBlock() { Text = Data["FormField1"] as string }
+                            },
+                            Height = AdaptiveHeight.Auto,
+                            Actions = new List<AdaptiveAction>()
+                            {
+                                new AdaptiveSubmitAction
+                                {
+                                    Type = AdaptiveSubmitAction.TypeName,
+                                    Title = "Submit",
+                                    Data = new JObject { { "submitLocation", "messagingExtensionFetchTask" } },
+                                },
+                            }
+                        },
+                        ContentType = AdaptiveCard.ContentType
+                    }) as Activity
                 }
             };
+
+            return response;
         }
 
         private MessagingExtensionActionResponse ShareMessageCommand(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action)
