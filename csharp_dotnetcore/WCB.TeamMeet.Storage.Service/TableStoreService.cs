@@ -26,7 +26,6 @@ namespace WCB.TeamMeet.Storage.Service
             {
                 Id = meeting.Id,
                 Name = meeting.Name,
-                Description = meeting.Description,
                 StartTime = meeting.StartTime,
                 EndTime = meeting.EndTime,
                 Location = meeting.Location,
@@ -130,7 +129,6 @@ namespace WCB.TeamMeet.Storage.Service
                         Id = result.Id,
                         Location = result.Location,
                         Name = result.Name,
-                        Description = result.Description,
                         StartTime = result.StartTime,
                         EndTime = result.EndTime,
                         CreatedDateTime = result.CreatedDateTime,
@@ -176,7 +174,6 @@ namespace WCB.TeamMeet.Storage.Service
                             Name = x.Name,
                             StartTime = x.StartTime,
                             EndTime = x.EndTime,
-                            Description = x.Description,
                             Capacity = x.Capacity,
                             CreatedDateTime = x.CreatedDateTime,
                             PublishedChannelId = x.PublishedChannelId

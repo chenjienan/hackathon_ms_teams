@@ -7,7 +7,6 @@ namespace WCB.TeamMeet.Domain
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
         public DateTime CreatedDateTime { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }

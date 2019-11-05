@@ -23,7 +23,6 @@ namespace TeamsMessagingExtensionsAction.Controllers
                 Id = "event123",
                 PublishedChannelId = "1234567890",
                 Name = "Testing",
-                Description = "TestDescription",
                 CreatedDateTime = DateTime.Now,
                 StartTime = "Nov 11, 2019",
                 EndTime = "Nov 12, 2019"

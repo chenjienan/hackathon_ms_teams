@@ -45,8 +45,10 @@ namespace TeamsMessagingExtensionsAction.Bots
                 // The user has chosen to create a card by choosing the 'Create Card' context menu command.
                 var eventData = ((JObject)action.Data).ToObject<Event>();
                 var eventId = Guid.NewGuid().ToString();
-                eventData.Id = eventId;
+                eventData.Id = eventId;                
                 eventData.PublishedChannelId = turnContext.Activity.ChannelId;
+                eventData.CreatedDateTime = DateTime.Now;
+                await turnContext.SendActivityAsync(JsonConvert.SerializeObject(eventData));
 
                 var responseActivity = Activity.CreateMessageActivity();
                 Attachment attachment = new Attachment()
@@ -57,7 +59,6 @@ namespace TeamsMessagingExtensionsAction.Bots
                         Body = new List<AdaptiveElement>()
                         {
                             new AdaptiveTextBlock {Text = "Event: " + eventData.Name, Size = AdaptiveTextSize.Large},
-                            new AdaptiveTextBlock {Text = eventData.Description},
                             new AdaptiveTextBlock
                                 {Text = "Time: from " + eventData.StartTime + " to " + eventData.EndTime},
                             new AdaptiveTextBlock {Text = "Total capacity: " + eventData.Capacity},
@@ -121,8 +122,6 @@ namespace TeamsMessagingExtensionsAction.Bots
                 case ActivityTypes.Message:
                     try
                     {
-                        //await turnContext.SendActivityAsync(turnContext.Activity.Value.ToString(), cancellationToken: cancellationToken);
-                        //await turnContext.SendActivityAsync(turnContext.Activity.ChannelData.ToString(), cancellationToken: cancellationToken);
                         JToken commandToken = JToken.Parse(turnContext.Activity.Value.ToString());
                         string action = commandToken["action"].Value<string>();
                         string eventId = commandToken["eventId"].Value<string>();
@@ -134,6 +133,7 @@ namespace TeamsMessagingExtensionsAction.Bots
                         response.ResponseUserId = turnContext.Activity.From.Id;
                         response.ResponseUsesrFirstName = turnContext.Activity.From.Name;
                         response.EventId = eventId;
+                        response.ResponseDateTime = DateTime.Now;
 
                         var yes = $"{turnContext.Activity.From.Name} is attending.";
                         var no = $"{turnContext.Activity.From.Name} is NOT attending.";
