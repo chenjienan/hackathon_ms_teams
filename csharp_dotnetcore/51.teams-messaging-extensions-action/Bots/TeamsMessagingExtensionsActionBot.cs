@@ -42,7 +42,7 @@ namespace TeamsMessagingExtensionsAction.Bots
             try
             {
                 // The user has chosen to create a card by choosing the 'Create Card' context menu command.
-                //var eventData = ((JObject)action.Data).ToObject<Event>();
+                var eventData = ((JObject)action.Data).ToObject<Event>();
 
                 var responseActivity = Activity.CreateMessageActivity();
                 Attachment attachment = new Attachment()
@@ -52,8 +52,10 @@ namespace TeamsMessagingExtensionsAction.Bots
                     {
                         Body = new List<AdaptiveElement>()
                         {
-                            new AdaptiveTextBlock { Text = "FormField1 value was:", Size = AdaptiveTextSize.Large },
-                            //new AdaptiveTextBlock { Text = eventData.Name }
+                            new AdaptiveTextBlock { Text = "Event: "+ eventData.Name, Size = AdaptiveTextSize.Large },
+                            new AdaptiveTextBlock { Text = eventData.Description },
+                            new AdaptiveTextBlock { Text = "Time: from " + eventData.StartTime + " to " + eventData.EndTime },
+                            new AdaptiveTextBlock { Text = "Total capacity: " + eventData.Capacity },
                         },
                         Height = AdaptiveHeight.Auto,
                         Actions = new List<AdaptiveAction>
